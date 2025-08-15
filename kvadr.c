@@ -7,7 +7,7 @@ void resh(float, float, float, float*, float*, float*);
 int main()
 {
     float v_koef1=0, v_koef2=0, v_koef3=0, v_n_koef=0, v_Disc=0, v_kor1=0, v_kor2=0;
-	printf("Введите коэффициенты квадратного уравнения. Для завершения программы введите q q q.\n");
+	printf("Р’РІРµРґРёС‚Рµ РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ РєРІР°РґСЂР°С‚РЅРѕРіРѕ СѓСЂР°РІРЅРµРЅРёСЏ. Р”Р»СЏ Р·Р°РІРµСЂС€РµРЅРёСЏ РїСЂРѕРіСЂР°РјРјС‹ РІРІРµРґРёС‚Рµ q q q.\n");
 	vvod(&v_koef1, &v_koef2, &v_koef3, &v_n_koef);
 	while (v_n_koef == 3)
     {
@@ -15,7 +15,7 @@ int main()
         vivod(v_Disc, v_kor1, v_kor2, v_koef1, v_koef2, v_koef3);
         vvod(&v_koef1, &v_koef2, &v_koef3, &v_n_koef);
     }
-    printf("Программа завершена.\n");
+    printf("РџСЂРѕРіСЂР°РјРјР° Р·Р°РІРµСЂС€РµРЅР°.\n");
     return 0;
 }
 void vivod(float Disc, float kor1, float kor2, float koef1, float koef2, float koef3)
@@ -25,21 +25,21 @@ void vivod(float Disc, float kor1, float kor2, float koef1, float koef2, float k
         if (koef2==0)
         {
             if (koef3==0)
-                printf("Корень уравнения - любое число.\n");
+                printf("РљРѕСЂРµРЅСЊ СѓСЂР°РІРЅРµРЅРёСЏ - Р»СЋР±РѕРµ С‡РёСЃР»Рѕ.\n");
             else
-                printf("Уравнение не имеет решений.\n");
+                printf("РЈСЂР°РІРЅРµРЅРёРµ РЅРµ РёРјРµРµС‚ СЂРµС€РµРЅРёР№.\n");
         }
         else
-            printf("Уравнение имеет одно решение, равное %f.\n", kor1);
+            printf("РЈСЂР°РІРЅРµРЅРёРµ РёРјРµРµС‚ РѕРґРЅРѕ СЂРµС€РµРЅРёРµ, СЂР°РІРЅРѕРµ %f.\n", kor1);
     }
     else
     {
         if (Disc<0)
-            printf("Уравнение не имеет решений в действительных числах.\n");
+            printf("РЈСЂР°РІРЅРµРЅРёРµ РЅРµ РёРјРµРµС‚ СЂРµС€РµРЅРёР№ РІ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅС‹С… С‡РёСЃР»Р°С….\n");
         else if (Disc==0)
-            printf("Уравнение имеет одно решение, равное %f.\n", kor1);
+            printf("РЈСЂР°РІРЅРµРЅРёРµ РёРјРµРµС‚ РѕРґРЅРѕ СЂРµС€РµРЅРёРµ, СЂР°РІРЅРѕРµ %f.\n", kor1);
         else
-            printf("Уравнение имеет два решения: %f и %f.\n", kor1, kor2);
+            printf("РЈСЂР°РІРЅРµРЅРёРµ РёРјРµРµС‚ РґРІР° СЂРµС€РµРЅРёСЏ: %f Рё %f.\n", kor1, kor2);
     }
 }
 void resh(float koef1, float koef2, float koef3, float *Disc, float *kor1, float *kor2)
