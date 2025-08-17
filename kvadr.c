@@ -1,67 +1,81 @@
 #include <stdio.h>
 #include <TXLib.h>
 #include <math.h>
-void vvod(float*, float*, float*, float*);
-void vivod(float, float, float, float, float, float);
-void resh(float, float, float, float*, float*, float*);
+
+void input_coefficients(float[], int*);
+void equation_solution(float[], float*, float[], int*);
+void output_answer(float[], int);
+
 int main()
 {
-    float v_koef1=0, v_koef2=0, v_koef3=0, v_n_koef=0, v_Disc=0, v_kor1=0, v_kor2=0;
+    float coefficients[3]={}, answers[2]={}, discriminant=0;
+    int number_of_coefficients=0, number_of_answers=0;
+
 	printf("Введите коэффициенты квадратного уравнения. Для завершения программы введите q q q.\n");
-	vvod(&v_koef1, &v_koef2, &v_koef3, &v_n_koef);
-	while (v_n_koef == 3)
+	input_coefficients(coefficients, &number_of_coefficients);
+
+	while (number_of_coefficients == 3)
     {
-        resh(v_koef1, v_koef2, v_koef3, &v_Disc, &v_kor1, &v_kor2);
-        vivod(v_Disc, v_kor1, v_kor2, v_koef1, v_koef2, v_koef3);
-        vvod(&v_koef1, &v_koef2, &v_koef3, &v_n_koef);
+        equation_solution(coefficients, &discriminant, answers, &number_of_answers);
+        output_answer(answers, number_of_answers);
+        input_coefficients(coefficients, &number_of_coefficients);
     }
+
     printf("Программа завершена.\n");
     return 0;
 }
-void vivod(float Disc, float kor1, float kor2, float koef1, float koef2, float koef3)
+
+void output_answer(float answers[], int number_of_answers)
 {
-    if (koef1==0)
+    if (number_of_answers == 0)
+        printf("Уравнение не имеет решений.\n");
+
+    else if (number_of_answers == 1)
+        printf("Уравнение имеет одно решение, равное %f.\n", answers[0]);
+
+    else if (number_of_answers == 2)
+        printf("Уравнение имеет два решения: %f и %f.\n", answers[0], answers[1]);
+
+    else
+        printf("Корень уравнения - любое число.\n");
+}
+
+void equation_solution(float coefficients[], float *discriminant, float answers[], int *number_of_answers)
+{
+    if (fabs(coefficients[0] - 0) < 0.00001)
     {
-        if (koef2==0)
+        if (fabs(coefficients[1] - 0) < 0.00001)
         {
-            if (koef3==0)
-                printf("Корень уравнения - любое число.\n");
+            if (fabs(coefficients[2] - 0) < 0.00001)
+                *number_of_answers=99999;
             else
-                printf("Уравнение не имеет решений.\n");
+                *number_of_answers=0;
         }
         else
-            printf("Уравнение имеет одно решение, равное %f.\n", kor1);
-    }
-    else
-    {
-        if (Disc<0)
-            printf("Уравнение не имеет решений в действительных числах.\n");
-        else if (Disc==0)
-            printf("Уравнение имеет одно решение, равное %f.\n", kor1);
-        else
-            printf("Уравнение имеет два решения: %f и %f.\n", kor1, kor2);
-    }
-}
-void resh(float koef1, float koef2, float koef3, float *Disc, float *kor1, float *kor2)
-{
-    if (koef1==0)
-    {
-        if (koef2!=0)
-            *kor1=-koef3/koef2;
-    }
-    else
-    {
-        *Disc=koef2*(koef2)-4*(koef1)*(koef3);
-        if (*Disc>0)
         {
-            *kor1=(-koef2+sqrt(*Disc))/(2*(koef1));
-            *kor2=(-koef2-sqrt(*Disc))/(2*(koef1));
+            answers[0] = -coefficients[2] / coefficients[1];
+            *number_of_answers=1;
         }
-        else if (*Disc==0)
-            *kor1=-koef2/(2*koef1);
+    }
+    else
+    {
+        *discriminant = coefficients[1] * coefficients[1] - 4 * coefficients[0] * coefficients[2];
+
+        if (*discriminant > 0)
+        {
+            answers[0] = (float) (-coefficients[1] + sqrt(*discriminant)) / (2 * coefficients[0]);
+            answers[1] = (float) (-coefficients[1] - sqrt(*discriminant)) / (2 * coefficients[0]);
+            *number_of_answers=2;
+        }
+        else if (fabs(*discriminant - 0) < 0.00001)
+        {
+            answers[0] = -coefficients[1] / (2 * coefficients[0]);
+            *number_of_answers=1;
+        }
     }
 }
-void vvod(float *koef1, float *koef2, float *koef3, float *n_koef)
+
+void input_coefficients(float coefficients[], int *number_of_coefficients)
 {
-    *n_koef = scanf("%f %f %f", koef1, koef2, koef3);
+    *number_of_coefficients = scanf("%f %f %f", &coefficients[0], &coefficients[1], &coefficients[2]);
 }
