@@ -1,16 +1,16 @@
 #include <stdio.h>
-#include <TXLib.h>
 #include <math.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <string.h>
 
 const double NUMBER_CLOSE_TO_ZERO = 10e-6;
 
 enum num_of_roots {
     INF_NUM_OF_SOLUTIONS = -1,
-    NO_SOLUTIONS         = 0,
-    ONE_SOLUTION         = 1,
-    TWO_SOLUTIONS        = 2
+    NO_SOLUTIONS         =  0,
+    ONE_SOLUTION         =  1,
+    TWO_SOLUTIONS        =  2
 };
 
 void input_coefficients(double*, bool*);
@@ -30,6 +30,9 @@ int main()
     int number_of_answers = NO_SOLUTIONS;
     bool quit_program = false;
 
+    printf("Quadratic equation solver\n"
+           "# (c) andreyphm, 2025\n\n");
+
     while (!quit_program)
     {
         input_coefficients(coefficients, &quit_program);
@@ -39,7 +42,7 @@ int main()
         output_answer(answers, number_of_answers);
     }
 
-    printf("                   .\n");
+    printf("Program completed.\n");
     return 0;
 }
 
@@ -48,17 +51,29 @@ void input_coefficients(double *coefficients, bool *quit_program)
     assert (coefficients);
     assert (quit_program);
 
+    char  input_row[100] = {};
     int number_of_coefficients = 0;
-    char input_row[200] = {};
+
 
     while (number_of_coefficients != 3)
     {
-        printf("                                          .\n");
-        number_of_coefficients = sscanf(input_row, "%lg %lg %lg", &coefficients[0], &coefficients[1], &coefficients[2]);
-        if (input_row[0] == '\n')
-            *quit_program = true;
-            break;
-        clear_input_buffer();
+        printf("Enter the coefficients:\n");
+        number_of_coefficients = scanf("%lg %lg %lg", &coefficients[0], &coefficients[1], &coefficients[2]);
+        if (number_of_coefficients != 3)
+        {
+            clear_input_buffer();
+            printf("You entered the coefficients incorrectly.\n"
+                   "Do you want to exit the program?\n"
+                   "Answer YES or NO\n");
+            fgets(input_row, 100, stdin);
+            if (strncmp(input_row, "YES", 3) == 0)
+            {
+                *quit_program = true;
+                break;
+            }
+            else if (strncmp(input_row, "NO", 2) == 0)
+                continue;
+        }
     }
 }
 
@@ -138,21 +153,21 @@ int is_close_to_zero (double number_being_checked)
 
 void output_answer(double *answers, int number_of_answers)
 {
-    assert (*answers);
+    assert (answers);
 
     switch (number_of_answers)
     {
         case NO_SOLUTIONS:
-            printf("                          .\n");
+            printf("The equation has no solutions.\n");
             break;
         case ONE_SOLUTION:
-            printf("                            ,        %g.\n", answers[0]);
+            printf("The equation has one solution: %g.\n", answers[0]);
             break;
         case TWO_SOLUTIONS:
-            printf("                           : %g   %g.\n", answers[0], answers[1]);
+            printf("The equation has two solutions: %g and %g.\n", answers[0], answers[1]);
             break;
         case INF_NUM_OF_SOLUTIONS:
-            printf("                 -            .\n");
+            printf("The root of the equation is any number.\n");
         default:
             break;
     }
