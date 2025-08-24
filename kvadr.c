@@ -3,19 +3,28 @@
 #include <stdbool.h>
 #include <assert.h>
 #include <string.h>
+#include <ctype.h>
 
 const double NUMBER_CLOSE_TO_ZERO = 10e-12;
 
-enum num_of_roots {
+enum num_of_roots
+{
     INF_NUM_OF_SOLUTIONS = -1,
     NO_SOLUTIONS         =  0,
     ONE_SOLUTION         =  1,
     TWO_SOLUTIONS        =  2
 };
 
-void input_coefficients(double* coefficients, bool* quit_program);
+enum program_what_to_do
+{
+    PROGRAM_QUIT         = -1,
+    PROGRAM_START_AGAIN  =  0,
+    PROGRAM_CONTINUE     =  1
+};
+
+void input_coefficient(double* coefficients, int* program_status);
 void clear_input_buffer(void);
-void request_re_entry(bool* introduced_yes, bool* introduced_no);
+void request_re_entry(int* program_status);
 
 void equation_solver(double* coefficients, double* answers, int* number_of_answers);
 void linear_equation_solver(double* coefficients, double* answers, int* number_of_answers);
@@ -34,19 +43,29 @@ struct equation_parameters {
 
 int main(void)
 {
-    bool quit_program = false;
+    int program_status = PROGRAM_CONTINUE;
+    const char numerate[3][7] = {"first", "second", "third"};
 
     printf("Quadratic equation solver\n"
            "# (c) andreyphm, 2025\n\n");
 
-    while (!quit_program)
+    while (program_status != PROGRAM_QUIT)
     {
-        input_coefficients(equation.coefficients, &quit_program);
-
-        if (quit_program == true) {
+        program_status = PROGRAM_CONTINUE;
+        int i = 0;
+        for (i = 0; i <= 2; i++)
+        {
+            printf("Enter the %s coefficient:\n", numerate[i]);
+            input_coefficient(&equation.coefficients[i], &program_status);
+            if (program_status == PROGRAM_QUIT || program_status == PROGRAM_START_AGAIN)
+            {
+                break;
+            }
+        }
+        if (program_status == PROGRAM_QUIT || program_status == PROGRAM_START_AGAIN)
+        {
             continue;
         }
-
         equation_solver(equation.coefficients, equation.answers, &equation.number_of_answers);
         output_answer(equation.answers, equation.number_of_answers);
     }
@@ -55,33 +74,55 @@ int main(void)
     return 0;
 }
 
-void input_coefficients(double* coefficients, bool* quit_program)
+void input_coefficient(double* coefficients, int* program_status)
 {
     assert(coefficients);
-    assert(quit_program);
+    assert(program_status);
 
-    int  number_of_coefficients = 0;
-    bool introduced_yes = false, introduced_no = false;
-
-    while (number_of_coefficients != 3)
+    int extra_symbol = 0;
+    int result_of_scanf = scanf("%lg", coefficients);
+    if (result_of_scanf == 1)
     {
-        printf("Enter the coefficients:\n");
-        number_of_coefficients = scanf("%lg %lg %lg", &coefficients[0], &coefficients[1], &coefficients[2]);
-
-        if (number_of_coefficients != 3)
+        extra_symbol = getchar();
+        if (!(extra_symbol == '\n' || extra_symbol == EOF))
         {
-            clear_input_buffer();
-            request_re_entry(&introduced_yes, &introduced_no);
-
-            if (introduced_yes)
-            {
-                *quit_program = true;
-                break;
-            }
-            else if (introduced_no) {
-                continue;
-            }
+            request_re_entry(program_status);
         }
+    }
+    else
+    {
+        request_re_entry(program_status);
+    }
+    return;
+}
+
+void request_re_entry(int* program_status)
+{
+    assert(program_status);
+
+    int user_answer = 0, extra_symbol = 0;
+
+    clear_input_buffer();
+
+    printf("You entered the coefficients incorrectly.\n"
+            "Do you want to continue the program?\n"
+            "Answer 1 to start again and write something else to exit:\n");
+
+    scanf("%d", &user_answer);
+
+    if (user_answer != 1)
+    {
+        *program_status = PROGRAM_QUIT;
+    }
+    else
+    {
+        extra_symbol = getchar();
+        if (extra_symbol == '\n' || extra_symbol == EOF)
+        {
+            *program_status = PROGRAM_START_AGAIN;
+        }
+        else
+            *program_status = PROGRAM_QUIT;
     }
     return;
 }
@@ -100,9 +141,9 @@ void equation_solver(double* coefficients, double* answers, int* number_of_answe
     assert(answers);
     assert(number_of_answers);
     assert(coefficients != answers);
-    assert(!isnan((float) coefficients[0]));
-    assert(!isnan((float) coefficients[1]));
-    assert(!isnan((float) coefficients[2]));
+    assert(!isnan((double) coefficients[0]));
+    assert(!isnan((double) coefficients[1]));
+    assert(!isnan((double) coefficients[2]));
 
     if (is_close_to_zero(coefficients[0])) {
         linear_equation_solver(coefficients, answers, number_of_answers);
@@ -196,33 +237,10 @@ void output_answer(double* answers, int number_of_answers)
     return;
 }
 
-void request_re_entry(bool *introduced_yes, bool *introduced_no)
-{
-    char input_row[100] = {};
-
-    printf("You entered the coefficients incorrectly.\n"
-                   "Do you want to exit the program?\n"
-                   "Answer YES or NO:\n");
-
-    while (!(*introduced_yes || *introduced_no))
-    {
-        fgets(input_row, 100, stdin);
-
-        if (strncmp(input_row, "YES", 3) == 0) {
-            *introduced_yes = true;
-        }
-        else if (strncmp(input_row, "NO", 2) == 0) {
-            *introduced_no = true;
-        }
-        else {
-            printf("Please, write YES to exit the program and NO to continue entering coefficients:\n");
-        }
-    }
-    return;
-}
-
 void check_minus_before_zero (double* number_being_checked)
 {
+    assert(number_being_checked);
+
     if (is_close_to_zero(*number_being_checked)) {
         *number_being_checked = fabs(*number_being_checked);
     }
