@@ -10,13 +10,13 @@ int test_one_equation(struct test_equation_data* test, struct answers_data* answ
     assert(test);
     assert(answers);
 
-    char num_of_answers_str[40] = "";
+    int num_of_answers = 0;
 
-    fscanf(file_pointer, "a = %lg, b = %lg, c = %lg, x1 = %lg, x2 = %lg, number_of_answers = %s\n",
+    fscanf(file_pointer, "a = %lg, b = %lg, c = %lg, x1 = %lg, x2 = %lg, number_of_answers = %d\n",
             &(test->coefficients.a), &(test->coefficients.b), &(test->coefficients.c),
-            &(test->reference_answers.x1), &(test->reference_answers.x2), num_of_answers_str);
+            &(test->reference_answers.x1), &(test->reference_answers.x2), &num_of_answers);
 
-    test->reference_answers.number_of_answers = str_to_enum(num_of_answers_str);
+    test->reference_answers.number_of_answers = (number_of_roots)num_of_answers;
 
     equation_solver(&(test->coefficients), answers);
 
@@ -43,13 +43,22 @@ int test_one_equation(struct test_equation_data* test, struct answers_data* answ
 
 void run_test_solver(struct answers_data* answers)
 {
-    struct test_equation_data array_of_tests[1];
+    struct test_equation_data array_of_tests[SIZE_OF_TESTS_ARRAY] = {};
 
     FILE* file_pointer = fopen("tests.txt", "r");
+
+    assert(file_pointer);
+
     int total_number_of_tests = 0;
     int number_of_failed_tests = 0;
 
     fscanf(file_pointer, "%d\n", &total_number_of_tests);
+
+    if (total_number_of_tests > SIZE_OF_TESTS_ARRAY)
+    {
+        printf("Too many tests");
+        return;
+    }
 
     for (int i = 0; i < total_number_of_tests; i++)
     {
@@ -80,7 +89,9 @@ number_of_roots str_to_enum(char* num_of_answers_str)
         return TWO_SOLUTIONS;
 
     else
+    {
         printf("str_to_enum error\n");
         return NO_SOLUTIONS;
+    }
 }
 

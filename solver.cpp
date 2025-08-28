@@ -24,7 +24,7 @@ void equation_solver(struct coefficients_data* coefficients,
 }
 
 void linear_equation_solver(struct coefficients_data* coefficients,
-                            struct answers_data* answers) //TODO assert
+                            struct answers_data* answers)
 {
     assert(coefficients);
     assert(answers);

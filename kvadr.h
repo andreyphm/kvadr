@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 const double NUMBER_CLOSE_TO_ZERO = 10e-12;
+const int SIZE_OF_TESTS_ARRAY = 100;
 
 enum number_of_roots
 {
