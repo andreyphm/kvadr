@@ -12,6 +12,9 @@ void equation_solver(struct coefficients_data* coefficients,
     assert(!isnan(coefficients->b));
     assert(!isnan(coefficients->c));
 
+    answers->x1 = 12345.6;
+    answers->x2 = 12345.6;
+
     if (is_close_to_zero(coefficients->a))
     {
         linear_equation_solver(coefficients, answers);
@@ -20,6 +23,7 @@ void equation_solver(struct coefficients_data* coefficients,
     {
         quadratic_equation_solver(coefficients, answers);
     }
+
     return;
 }
 
@@ -46,6 +50,7 @@ void linear_equation_solver(struct coefficients_data* coefficients,
         check_minus_before_zero(&(answers->x1));
         answers->number_of_answers = ONE_SOLUTION;
     }
+
     return;
 }
 
@@ -78,7 +83,10 @@ void quadratic_equation_solver(struct coefficients_data* coefficients,
         answers->number_of_answers = ONE_SOLUTION;
     }
     else
+    {
         answers->number_of_answers = NO_SOLUTIONS;
+    }
+
     return;
 }
 
@@ -93,8 +101,10 @@ void check_minus_before_zero (double* number_being_checked)
 {
     assert(number_being_checked);
 
-    if (is_close_to_zero(*number_being_checked)) {
+    if (is_close_to_zero(*number_being_checked))
+    {
         *number_being_checked = fabs(*number_being_checked);
     }
+
     return;
 }

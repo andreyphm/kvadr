@@ -1,7 +1,6 @@
 #include <math.h>
 #include <assert.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "kvadr.h"
 
@@ -12,7 +11,7 @@ int test_one_equation(struct test_equation_data* test, struct answers_data* answ
 
     int num_of_answers = 0;
 
-    fscanf(file_pointer, "a = %lg, b = %lg, c = %lg, x1 = %lg, x2 = %lg, number_of_answers = %d\n",
+    fscanf(file_pointer, "a = %lf, b = %lf, c = %lf, x1 = %lf, x2 = %lf, number_of_answers = %d\n",
             &(test->coefficients.a), &(test->coefficients.b), &(test->coefficients.c),
             &(test->reference_answers.x1), &(test->reference_answers.x2), &num_of_answers);
 
@@ -24,13 +23,7 @@ int test_one_equation(struct test_equation_data* test, struct answers_data* answ
           is_close_to_zero(answers->x2 - test->reference_answers.x2) &&
           answers->number_of_answers == test->reference_answers.number_of_answers))
     {
-        printf("FAILED: equation_solver({%lg, %lg, %lg}, {%lg, %lg, %d})\n"
-               "Our solution: %lg, %lg, %d\n\n",
-        test->coefficients.a, test->coefficients.b, test->coefficients.c,
-        test->reference_answers.x1, test->reference_answers.x2,
-        test->reference_answers.number_of_answers,
-        answers->x1, answers->x2,
-        answers->number_of_answers);
+        display_failed_message(test, answers);
 
         return 1;
     }
@@ -71,4 +64,18 @@ void run_test_solver(struct answers_data* answers)
 
     return;
 }
+
+void display_failed_message(struct test_equation_data* test, struct answers_data* answers)
+{
+    printf("FAILED: equation_solver({%lg, %lg, %lg}, {%lg, %lg, %d})\n"
+               "Our solution: %lg, %lg, %d\n\n",
+        test->coefficients.a, test->coefficients.b, test->coefficients.c,
+        test->reference_answers.x1, test->reference_answers.x2,
+        test->reference_answers.number_of_answers,
+        answers->x1, answers->x2,
+        answers->number_of_answers);
+
+    return;
+}
+
 

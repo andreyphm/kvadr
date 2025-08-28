@@ -42,7 +42,7 @@ void display_a_greeting(void);
 
 int test_one_equation(struct test_equation_data* test_equation, struct answers_data* answers, FILE* file_pointer);
 void run_test_solver(struct answers_data* answers);
-number_of_roots str_to_enum(char* num_of_answers_str);
+void display_failed_message(struct test_equation_data* test, struct answers_data* answers);
 
 void input_coefficient(struct coefficients_data* coefficients, struct answers_data* answers, int* program_status);
 void clear_input_buffer(void);
