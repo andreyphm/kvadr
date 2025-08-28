@@ -3,85 +3,89 @@
 
 #include "kvadr.h"
 
-void equation_solver(struct equation_data* equation)
+void equation_solver(struct coefficients_data* coefficients,
+                     struct answers_data* answers)
 {
-    /*assert(coefficients);
+    assert(coefficients);
     assert(answers);
-    assert(number_of_answers);
-    assert(coefficients != answers);
-    assert(!isnan((double) *coefficients));
-    assert(!isnan((double) *(coefficients+1)));
-    assert(!isnan((double) *(coefficients+2)));*/
+    assert(!isnan(coefficients->a));
+    assert(!isnan(coefficients->b));
+    assert(!isnan(coefficients->c));
 
-    if (is_close_to_zero(equation->coefficients.a))
+    if (is_close_to_zero(coefficients->a))
     {
-        linear_equation_solver(equation);
+        linear_equation_solver(coefficients, answers);
     }
     else
     {
-        quadratic_equation_solver(equation);
+        quadratic_equation_solver(coefficients, answers);
     }
     return;
 }
 
-void linear_equation_solver(struct equation_data* equation)
+void linear_equation_solver(struct coefficients_data* coefficients,
+                            struct answers_data* answers) //TODO assert
 {
-    if (is_close_to_zero(equation->coefficients.b))
+    assert(coefficients);
+    assert(answers);
+
+    if (is_close_to_zero(coefficients->b))
     {
-        if (is_close_to_zero(equation->coefficients.c))
+        if (is_close_to_zero(coefficients->c))
         {
-            equation->number_of_answers = INF_NUM_OF_SOLUTIONS;
+            answers->number_of_answers = INF_NUM_OF_SOLUTIONS;
         }
         else
         {
-            equation->number_of_answers = NO_SOLUTIONS;
+            answers->number_of_answers = NO_SOLUTIONS;
         }
     }
     else
     {
-        equation->answers.x1 = - equation->coefficients.c / equation->coefficients.b;
-        check_minus_before_zero(&(equation->answers.x1));
-        equation->number_of_answers = ONE_SOLUTION;
+        answers->x1 = - coefficients->c / coefficients->b;
+        check_minus_before_zero(&(answers->x1));
+        answers->number_of_answers = ONE_SOLUTION;
     }
     return;
 }
 
-void quadratic_equation_solver(struct equation_data* equation)
+void quadratic_equation_solver(struct coefficients_data* coefficients,
+                               struct answers_data* answers)
 {
-    /*assert(coefficients);
+    assert(coefficients);
     assert(answers);
-    assert(number_of_answers);
-    assert(coefficients != answers);*/
 
-    double discriminant = equation->coefficients.b * equation->coefficients.b -
-                          4 * equation->coefficients.a * equation->coefficients.c;
+    double discriminant = coefficients->b * coefficients->b -
+                          4 * coefficients->a * coefficients->c;
 
     if (discriminant > 0)
     {
-        equation->answers.x1 = (-equation->coefficients.b + sqrt(discriminant)) /
-                                                        (2 * equation->coefficients.a);
+        answers->x1 = (-coefficients->b + sqrt(discriminant)) /
+                                                        (2 * coefficients->a);
 
-        equation->answers.x2 = (-equation->coefficients.b - sqrt(discriminant)) /
-                                                        (2 * equation->coefficients.a);
+        answers->x2 = (-coefficients->b - sqrt(discriminant)) /
+                                                        (2 * coefficients->a);
 
-        check_minus_before_zero(&(equation->answers.x1));
-        check_minus_before_zero(&(equation->answers.x2));
+        check_minus_before_zero(&(answers->x1));
+        check_minus_before_zero(&(answers->x2));
 
-        equation->number_of_answers = TWO_SOLUTIONS;
+        answers->number_of_answers = TWO_SOLUTIONS;
     }
     else if (is_close_to_zero(discriminant))
     {
-        equation->answers.x1 = -equation->coefficients.b / (2 * equation->coefficients.a);
-        check_minus_before_zero(&(equation->answers.x1));
-        equation->number_of_answers = ONE_SOLUTION;
+        answers->x1 = -coefficients->b / (2 * coefficients->a);
+        check_minus_before_zero(&(answers->x1));
+        answers->number_of_answers = ONE_SOLUTION;
     }
     else
-        equation->number_of_answers = NO_SOLUTIONS;
+        answers->number_of_answers = NO_SOLUTIONS;
     return;
 }
 
 int is_close_to_zero (double number_being_checked)
 {
+    assert(!isnan(number_being_checked));
+
     return (fabs(number_being_checked) < NUMBER_CLOSE_TO_ZERO);
 }
 

@@ -1,22 +1,21 @@
-#include <stdio.h>
 #include <assert.h>
 
 #include "kvadr.h"
 
-void output_answer(struct equation_data* equation)
+void output_answer(struct answers_data* answers)
 {
-    /*assert(answers);*/
+    assert(answers);
 
-    switch (equation->number_of_answers)
+    switch (answers->number_of_answers)
     {
         case NO_SOLUTIONS:
             printf("The equation has no solutions.\n");
             break;
         case ONE_SOLUTION:
-            printf("The equation has one solution: %lg.\n", equation->answers.x1);
+            printf("The equation has one solution: %lg.\n", answers->x1);
             break;
         case TWO_SOLUTIONS:
-            printf("The equation has two solutions: %lg and %lg.\n", equation->answers.x1, equation->answers.x2);
+            printf("The equation has two solutions: %lg and %lg.\n", answers->x1, answers->x2);
             break;
         case INF_NUM_OF_SOLUTIONS:
             printf("The root of the equation is any number.\n");

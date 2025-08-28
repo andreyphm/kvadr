@@ -1,62 +1,86 @@
-#include <stdio.h>
 #include <math.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "kvadr.h"
 
-int test_one_equation(struct test_equation_data* test_equation)
+int test_one_equation(struct test_equation_data* test, struct answers_data* answers, FILE* file_pointer)
 {
-    test_equation_solver(test_equation);
+    assert(test);
+    assert(answers);
 
-    if (!(is_close_to_zero(test_equation->answers.x1 - test_equation->reference_answers.x1_ref) &&
-          is_close_to_zero(test_equation->answers.x2 - test_equation->reference_answers.x2_ref) &&
-          test_equation->number_of_answers == test_equation->reference_number_of_answers))
-    {
-        printf("FAILED: equation_solution ({%lg, %lg, %lg}, {%lg, %lg}, %d, "
-               "but our solution: %lg, %lg, %d)\n",
-        test_equation->coefficients.a, test_equation->coefficients.b, test_equation->coefficients.c,
-        test_equation->reference_answers.x1_ref, test_equation->reference_answers.x2_ref,
-        test_equation->reference_number_of_answers,
-        test_equation->answers.x1, test_equation->answers.x2,
-        test_equation->number_of_answers);
+    char num_of_answers_str[40] = "";
 
-        return 0;
-    }
-    else
+    fscanf(file_pointer, "a = %lg, b = %lg, c = %lg, x1 = %lg, x2 = %lg, number_of_answers = %s\n",
+            &(test->coefficients.a), &(test->coefficients.b), &(test->coefficients.c),
+            &(test->reference_answers.x1), &(test->reference_answers.x2), num_of_answers_str);
+
+    test->reference_answers.number_of_answers = str_to_enum(num_of_answers_str);
+
+    equation_solver(&(test->coefficients), answers);
+
+    if (!(is_close_to_zero(answers->x1 - test->reference_answers.x1) &&
+          is_close_to_zero(answers->x2 - test->reference_answers.x2) &&
+          answers->number_of_answers == test->reference_answers.number_of_answers))
     {
+        printf("FAILED: equation_solver({%lg, %lg, %lg}, {%lg, %lg, %d})\n"
+               "Our solution: %lg, %lg, %d\n\n",
+        test->coefficients.a, test->coefficients.b, test->coefficients.c,
+        test->reference_answers.x1, test->reference_answers.x2,
+        test->reference_answers.number_of_answers,
+        answers->x1, answers->x2,
+        answers->number_of_answers);
+
         return 1;
     }
+
+    else
+    {
+        return 0;
+    }
 }
 
-int run_test_solver()
+void run_test_solver(struct answers_data* answers)
 {
-    struct test_equation_data array_of_test_equations[] = {{{.a = 0,.b = 0,.c = 0}, {.x1 = NAN,.x2 = NAN},.number_of_answers = -1,
-                                                            {.x1_ref = NAN,.x2_ref = NAN}, .reference_number_of_answers = -1},
-                                                           {{.a = 1,.b = 2,.c = 3}, {.x1 = NAN,.x2 = NAN},.number_of_answers = 0,
-                                                            {.x1_ref = NAN,.x2_ref = NAN}, .reference_number_of_answers = 0},
-                                                           {{.a = 1,.b = 0,.c = 4}, {.x1 = NAN,.x2 = NAN},.number_of_answers = 0,
-                                                            {.x1_ref = NAN,.x2_ref = NAN}, .reference_number_of_answers = 0},
-                                                           {{.a = 1,.b = 0,.c = -4}, {.x1 = 2,.x2 = -2},.number_of_answers = 2,
-                                                            {.x1_ref = 2,.x2_ref = -2}, .reference_number_of_answers = 2},
-                                                           {{.a = 0,.b = 1,.c = 3}, {.x1 = -3,.x2 = NAN},.number_of_answers = 1,
-                                                            {.x1_ref = -3,.x2_ref = NAN}, .reference_number_of_answers = 1},
-                                                           {{.a = 0,.b = 0,.c = 3}, {.x1 = NAN,.x2 = NAN},.number_of_answers = 0,
-                                                            {.x1_ref = NAN,.x2_ref = NAN}, .reference_number_of_answers = 0},
-                                                           {{.a = 0,.b = 10000,.c = 0}, {.x1 = 0,.x2 = NAN},.number_of_answers = 1,
-                                                            {.x1_ref = 0,.x2_ref = NAN}, .reference_number_of_answers = 1},
-                                                           {{.a = 4,.b = 8,.c = 4}, {.x1 = -1,.x2 = NAN},.number_of_answers = 1,
-                                                            {.x1_ref = -1,.x2_ref = NAN}, .reference_number_of_answers = 1},
-                                                           {{.a = 9,.b = 99999,.c = 0}, {.x1 = 0,.x2 = -11111},.number_of_answers = 2,
-                                                            {.x1_ref = 0,.x2_ref = -11111}, .reference_number_of_answers = 2},
-                                                           {{.a = 1,.b = 0.864,.c = -0.121401}, {.x1 = 0.123,.x2 = -0.987},.number_of_answers = 2,
-                                                            {.x1_ref = -0.123,.x2_ref = -0.987}, .reference_number_of_answers = 2}};
-    int failed_tests = 0;
+    struct test_equation_data array_of_tests[1];
+
+    FILE* file_pointer = fopen("tests.txt", "r");
     int total_number_of_tests = 0;
-    size_t number_of_equations = sizeof(array_of_test_equations) / sizeof(array_of_test_equations[0]);
-    for (size_t i = 0; i < number_of_equations; i++)
+    int number_of_failed_tests = 0;
+
+    fscanf(file_pointer, "%d\n", &total_number_of_tests);
+
+    for (int i = 0; i < total_number_of_tests; i++)
     {
-        total_number_of_tests++;
-        failed_tests += !test_one_equation(&array_of_test_equations[i]);
+        number_of_failed_tests += test_one_equation(&array_of_tests[i], answers, file_pointer);
     }
-    printf("Total number of tests: %d\n", total_number_of_tests);
-    return failed_tests;
+
+    printf("Number of failed tests: %d\n", number_of_failed_tests);
+
+    fclose(file_pointer);
+
+    return;
 }
+
+number_of_roots str_to_enum(char* num_of_answers_str)
+{
+    assert(num_of_answers_str);
+
+    if (!strncmp(num_of_answers_str, "INF_NUM_OF_SOLUTIONS", 21))
+        return INF_NUM_OF_SOLUTIONS;
+
+    else if (!strncmp(num_of_answers_str, "NO_SOLUTIONS", 13))
+        return NO_SOLUTIONS;
+
+    else if (!strncmp(num_of_answers_str, "ONE_SOLUTION", 13))
+        return ONE_SOLUTION;
+
+    else if (!strncmp(num_of_answers_str, "TWO_SOLUTIONS", 14))
+        return TWO_SOLUTIONS;
+
+    else
+        printf("str_to_enum error\n");
+        return NO_SOLUTIONS;
+}
+

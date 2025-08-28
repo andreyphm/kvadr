@@ -1,49 +1,46 @@
-#include <stdio.h>
 #include <assert.h>
 #include <math.h>
 #include "kvadr.h"
 
+//TODO батники прочитать в инете
+//TODO попросить челика настроить гитхаб
+
 int main(void)
 {
-    struct equation_data equation =
-    {
-        .coefficients = {.a = NAN, .b = NAN, .c = NAN},
-        .answers = {.x1 = NAN, .x2 = NAN},
-        .number_of_answers = NO_SOLUTIONS
-    };
-
+    struct coefficients_data coefficients = {.a = NAN, .b = NAN, .c = NAN};
+    struct answers_data answers = {.x1 = 0, .x2 = 0,.number_of_answers = NO_SOLUTIONS};
+    
     int program_status = PROGRAM_CONTINUE;
-    const char numerate[][7] = {"first", "second", "third"};
 
-    printf("Quadratic equation solver\n"
-           "# (c) andreyphm, 2025\n\n");
-
-    int number_of_failed_tests = run_test_solver();
-    printf("Number of failed tests: %d\n", number_of_failed_tests);
+    display_a_greeting();
+    run_test_solver(&answers);
 
     while (program_status != PROGRAM_QUIT)
     {
-        program_status = PROGRAM_CONTINUE;
-        int i = 0;
+        input_coefficient(&coefficients, &answers, &program_status);
 
-        for (i = 0; i <= 2; i++)
-        {
-            printf("Enter the %s coefficient:\n", numerate[i]);
-            input_coefficient(&(equation.coefficients.a) + i, &program_status);
-
-            if (program_status == PROGRAM_QUIT || program_status == PROGRAM_START_AGAIN)
-            {
-                break;
-            }
-        }
         if (program_status == PROGRAM_QUIT || program_status == PROGRAM_START_AGAIN)
         {
             continue;
         }
-        equation_solver(&equation);
-        output_answer(&equation);
+
+        equation_solver(&coefficients, &answers);
+        output_answer(&answers);
     }
 
-    printf("Program completed.\n");
+    program_completed();
     return 0;
+}
+
+void display_a_greeting(void)
+{
+    printf("Quadratic equation solver\n"
+           "meow # (c) andreyphm, 2025\n\n");
+    return;
+}
+
+void program_completed(void)
+{
+    printf("Program completed. COMMIT GITHUB.\n");
+    return;
 }

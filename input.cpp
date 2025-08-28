@@ -4,28 +4,40 @@
 
 #include "kvadr.h"
 
-void input_coefficient(double* coefficient, int* program_status)
+void input_coefficient(struct coefficients_data* coefficients, struct answers_data* answers, int* program_status)
 {
-    assert(coefficient);
+    assert(coefficients);
+    assert(answers);
     assert(program_status);
 
-    int extra_symbol = 0;
-    int result_of_scanf = scanf("%lg", coefficient);
+    *program_status = PROGRAM_CONTINUE;
 
-    if (result_of_scanf == 1)
+    const char numerate[][7] = {"first", "second", "third"};
+
+    for (int i = 0; i <= 2; i++)
     {
-        extra_symbol = getchar();
+        printf("Enter the %s coefficient:\n", numerate[i]);
+        int result_of_scanf = scanf("%lg", &(coefficients->a) + i);
+        int extra_symbol = 0;
 
-        if (!(extra_symbol == '\n' || extra_symbol == EOF))
+        if (result_of_scanf == 1)
+        {
+            extra_symbol = getchar();
+
+            if (!(extra_symbol == '\n' || extra_symbol == EOF))
+            {
+                request_re_entry(program_status);
+            }
+        }
+        else
         {
             request_re_entry(program_status);
         }
+        if (*program_status == PROGRAM_QUIT || *program_status == PROGRAM_START_AGAIN)
+        {
+            break;
+        }
     }
-    else
-    {
-        request_re_entry(program_status);
-    }
-    return;
 }
 
 void request_re_entry(int* program_status)
