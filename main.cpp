@@ -6,7 +6,7 @@
 int main(void)
 {
     struct coefficients_data coefficients = {.a = NAN, .b = NAN, .c = NAN};
-    struct answers_data answers = {.x1 = NAN, .x2 = NAN,.number_of_answers = NO_SOLUTIONS};
+    struct answers_data answers = {.x1 = 0, .x2 = 0,.number_of_answers = ERROR_SOLUTIONS};
 
     int program_status = PROGRAM_CONTINUE;
 

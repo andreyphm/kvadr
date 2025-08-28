@@ -1,21 +1,23 @@
 #include <math.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 
 #include "kvadr.h"
 
-int test_one_equation(struct test_equation_data* test, struct answers_data* answers, FILE* file_pointer)
+bool test_one_equation(struct test_equation_data* test, struct answers_data* answers, FILE* file_pointer)
 {
     assert(test);
     assert(answers);
 
-    int num_of_answers = 0;
+    char num_of_answers[MAX_LEN_STR_NUM_ROOTS] = "";
 
-    fscanf(file_pointer, "a = %lf, b = %lf, c = %lf, x1 = %lf, x2 = %lf, number_of_answers = %d\n",
+    fscanf(file_pointer, "a = %lf, b = %lf, c = %lf, x1 = %lf, x2 = %lf, number_of_answers = %s\n",
             &(test->coefficients.a), &(test->coefficients.b), &(test->coefficients.c),
-            &(test->reference_answers.x1), &(test->reference_answers.x2), &num_of_answers);
+            &(test->reference_answers.x1), &(test->reference_answers.x2), num_of_answers);
 
-    test->reference_answers.number_of_answers = (number_of_roots)num_of_answers;
+    test->reference_answers.number_of_answers = str_to_enum(num_of_answers);
 
     equation_solver(&(test->coefficients), answers);
 
@@ -25,12 +27,13 @@ int test_one_equation(struct test_equation_data* test, struct answers_data* answ
     {
         display_failed_message(test, answers);
 
-        return 1;
+        return true;
     }
 
     else
     {
-        return 0;
+        printf("Test passed (%lg %lg %lg).\n", test->coefficients.a, test->coefficients.b, test->coefficients.c);
+        return false;
     }
 }
 
@@ -78,4 +81,17 @@ void display_failed_message(struct test_equation_data* test, struct answers_data
     return;
 }
 
+number_of_roots str_to_enum(char* number_of_answers)
+{
+    if (!strncmp(number_of_answers, "INF_SOLUTIONS", strlen("INF_SOLUTIONS")))
+        return INF_SOLUTIONS;
+    else if (!strncmp(number_of_answers, "NO_SOLUTIONS", strlen("NO_SOLUTIONS")))
+        return NO_SOLUTIONS;
+    else if (!strncmp(number_of_answers, "ONE_SOLUTION", strlen("ONE_SOLUTION")))
+        return ONE_SOLUTION;
+    else if (!strncmp(number_of_answers, "TWO_SOLUTIONS", strlen("TWO_SOLUTIONS")))
+        return TWO_SOLUTIONS;
+    else
+        return ERROR_SOLUTIONS;
+}
 

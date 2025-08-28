@@ -12,9 +12,9 @@ void input_coefficient(struct coefficients_data* coefficients, struct answers_da
 
     *program_status = PROGRAM_CONTINUE;
 
-    const char numerate[][7] = {"first", "second", "third"};
+    const char numerate[][MAX_LEN_STR_COEFS] = {"first", "second", "third"};
 
-    for (int i = 0; i <= 2; i++)
+    for (int i = 0; i < NUM_OF_COEFFICIENTS; i++) //TODO: MAGIC CONSTANT
     {
         printf("Enter the %s coefficient:\n", numerate[i]);
         int result_of_scanf = scanf("%lf", &(coefficients->a) + i);
@@ -81,7 +81,7 @@ void request_re_entry(int* program_status)
 void clear_input_buffer(void)
 {
     int entered_character = 0;
-
+    //TODO dowhile-> while
     do {
         entered_character = getchar();
     } while (entered_character != '\n' && entered_character != EOF);

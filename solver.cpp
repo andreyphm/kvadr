@@ -8,12 +8,12 @@ void equation_solver(struct coefficients_data* coefficients,
 {
     assert(coefficients);
     assert(answers);
-    assert(!isnan(coefficients->a));
-    assert(!isnan(coefficients->b));
-    assert(!isnan(coefficients->c));
+    is_not_special_value(coefficients->a);
+    is_not_special_value(coefficients->b);
+    is_not_special_value(coefficients->c);
 
-    answers->x1 = 12345.6;
-    answers->x2 = 12345.6;
+    answers->x1 = 0;
+    answers->x2 = 0;
 
     if (is_close_to_zero(coefficients->a))
     {
@@ -37,7 +37,7 @@ void linear_equation_solver(struct coefficients_data* coefficients,
     {
         if (is_close_to_zero(coefficients->c))
         {
-            answers->number_of_answers = INF_NUM_OF_SOLUTIONS;
+            answers->number_of_answers = INF_SOLUTIONS;
         }
         else
         {
@@ -70,6 +70,10 @@ void quadratic_equation_solver(struct coefficients_data* coefficients,
 
         answers->x2 = (-coefficients->b - sqrt(discriminant)) /
                                                         (2 * coefficients->a);
+        if (answers->x2 > answers->x1)
+        {
+            swap_value(&answers->x2, &answers->x1);
+        }
 
         check_minus_before_zero(&(answers->x1));
         check_minus_before_zero(&(answers->x2));
@@ -92,7 +96,7 @@ void quadratic_equation_solver(struct coefficients_data* coefficients,
 
 int is_close_to_zero (double number_being_checked)
 {
-    assert(!isnan(number_being_checked));
+    is_not_special_value(number_being_checked);
 
     return (fabs(number_being_checked) < NUMBER_CLOSE_TO_ZERO);
 }
@@ -105,6 +109,21 @@ void check_minus_before_zero (double* number_being_checked)
     {
         *number_being_checked = fabs(*number_being_checked);
     }
+
+    return;
+}
+
+void is_not_special_value(double coefficient)
+{
+    assert(!isnan(coefficient) && !isinf(coefficient));
+    return;
+}
+
+void swap_value(double* answer_1, double* answer_2)
+{
+    double first_value_answer_1 = *answer_1;
+    *answer_1 = *answer_2;
+    *answer_2 = first_value_answer_1;
 
     return;
 }

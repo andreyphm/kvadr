@@ -17,11 +17,12 @@ void output_answer(struct answers_data* answers)
         case TWO_SOLUTIONS:
             printf("The equation has two solutions: %lg and %lg.\n", answers->x1, answers->x2);
             break;
-        case INF_NUM_OF_SOLUTIONS:
+        case INF_SOLUTIONS:
             printf("The root of the equation is any number.\n");
             break;
+        case ERROR_SOLUTIONS:
         default:
-            printf("Input error");
+            printf("Input error.\n");
             break;
     }
     return;
