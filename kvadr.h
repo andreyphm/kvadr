@@ -4,8 +4,6 @@
 #include <stdio.h>
 
 const double NUMBER_CLOSE_TO_ZERO  = 10e-12;
-const int    SIZE_OF_TESTS_ARRAY   = 100;
-const int    MAX_LEN_STR_NUM_ROOTS = 14;
 const int    MAX_LEN_STR_COEFS     = 7;
 const int    NUM_OF_COEFFICIENTS   = 3;
 
@@ -44,10 +42,7 @@ struct test_equation_data
 
 void display_a_greeting(void);
 
-bool test_one_equation(struct test_equation_data* test_equation, struct answers_data* answers, FILE* file_pointer);
-void run_test_solver(struct answers_data* answers);
-void display_failed_message(struct test_equation_data* test, struct answers_data* answers);
-number_of_roots str_to_enum(char* number_of_answers);
+void run_test_solver(struct answers_data* answers, int argc, const char* argv[]);
 void swap_value(double* answer_1, double* answer_2);
 
 void input_coefficient(struct coefficients_data* coefficients, struct answers_data* answers, int* program_status);

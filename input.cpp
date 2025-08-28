@@ -1,8 +1,8 @@
-#include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
 
 #include "kvadr.h"
+#include "font.h"
 
 void input_coefficient(struct coefficients_data* coefficients, struct answers_data* answers, int* program_status)
 {
@@ -14,9 +14,9 @@ void input_coefficient(struct coefficients_data* coefficients, struct answers_da
 
     const char numerate[][MAX_LEN_STR_COEFS] = {"first", "second", "third"};
 
-    for (int i = 0; i < NUM_OF_COEFFICIENTS; i++) //TODO: MAGIC CONSTANT
+    for (int i = 0; i < NUM_OF_COEFFICIENTS; i++)
     {
-        printf("Enter the %s coefficient:\n", numerate[i]);
+        printf(MAKE_BOLD("Enter the %s coefficient:\n"), numerate[i]);
         int result_of_scanf = scanf("%lf", &(coefficients->a) + i);
         int extra_symbol = 0;
 
@@ -48,9 +48,9 @@ void request_re_entry(int* program_status)
 
     clear_input_buffer();
 
-    printf("You entered the coefficients incorrectly.\n"
-            "Do you want to continue the program?\n"
-            "Answer 1 to start again and write something else to exit:\n");
+    printf(MAKE_BOLD_RED("You entered the coefficients incorrectly.\n"
+                         "Do you want to continue the program?\n"
+                         "Answer 1 to start again and write something else to exit:\n"));
 
     scanf("%d", &user_answer);
 
@@ -81,7 +81,7 @@ void request_re_entry(int* program_status)
 void clear_input_buffer(void)
 {
     int entered_character = 0;
-    //TODO dowhile-> while
+
     do {
         entered_character = getchar();
     } while (entered_character != '\n' && entered_character != EOF);

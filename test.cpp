@@ -1,10 +1,37 @@
+#include <stdio.h>
 #include <math.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
-#include "kvadr.h"
+#include "test.h"
+#include "font.h"
+
+void run_test_solver(struct answers_data* answers, int argc, const char* argv[])
+{
+    struct test_equation_data array_of_tests[SIZE_OF_TESTS_ARRAY] = {}; //TODO calloc
+
+    FILE* file_pointer = fopen(argv[1] , "r");
+    is_input_correct(argc, argv, file_pointer);
+
+    int total_number_of_tests = 0;
+    int number_of_failed_tests = 0;
+
+    fscanf(file_pointer, "%d\n", &total_number_of_tests);
+    is_number_of_tests_correct(total_number_of_tests);
+
+    for (int i = 0; i < total_number_of_tests; i++)
+    {
+        number_of_failed_tests += test_one_equation(&array_of_tests[i], answers, file_pointer);
+    }
+
+    printf(MAKE_BOLD("Number of failed tests: %d.\n\n"), number_of_failed_tests);
+
+    fclose(file_pointer);
+
+    return;
+}
 
 bool test_one_equation(struct test_equation_data* test, struct answers_data* answers, FILE* file_pointer)
 {
@@ -32,51 +59,22 @@ bool test_one_equation(struct test_equation_data* test, struct answers_data* ans
 
     else
     {
-        printf("Test passed (%lg %lg %lg).\n", test->coefficients.a, test->coefficients.b, test->coefficients.c);
+        printf(MAKE_BOLD_GREEN("Test passed (%lg %lg %lg).\n"),
+                                test->coefficients.a, test->coefficients.b, test->coefficients.c);
         return false;
     }
 }
 
-void run_test_solver(struct answers_data* answers)
-{
-    struct test_equation_data array_of_tests[SIZE_OF_TESTS_ARRAY] = {};
-
-    FILE* file_pointer = fopen("tests.txt", "r");
-
-    assert(file_pointer);
-
-    int total_number_of_tests = 0;
-    int number_of_failed_tests = 0;
-
-    fscanf(file_pointer, "%d\n", &total_number_of_tests);
-
-    if (total_number_of_tests > SIZE_OF_TESTS_ARRAY)
-    {
-        printf("Too many tests\n");
-        return;
-    }
-
-    for (int i = 0; i < total_number_of_tests; i++)
-    {
-        number_of_failed_tests += test_one_equation(&array_of_tests[i], answers, file_pointer);
-    }
-
-    printf("Number of failed tests: %d\n\n", number_of_failed_tests);
-
-    fclose(file_pointer);
-
-    return;
-}
-
 void display_failed_message(struct test_equation_data* test, struct answers_data* answers)
 {
-    printf("FAILED: equation_solver({%lg, %lg, %lg}, {%lg, %lg, %d})\n"
-               "Our solution: %lg, %lg, %d\n\n",
-        test->coefficients.a, test->coefficients.b, test->coefficients.c,
-        test->reference_answers.x1, test->reference_answers.x2,
-        test->reference_answers.number_of_answers,
-        answers->x1, answers->x2,
-        answers->number_of_answers);
+    printf(MAKE_BOLD_RED("FAILED: equation_solver({%lg, %lg, %lg}, {%lg, %lg, %d})\n"),
+                            test->coefficients.a, test->coefficients.b, test->coefficients.c,
+                            test->reference_answers.x1, test->reference_answers.x2,
+                            test->reference_answers.number_of_answers);
+
+    printf(MAKE_BOLD("Our solution: %lg, %lg, %d\n\n"),
+                            answers->x1, answers->x2,
+                            answers->number_of_answers);
 
     return;
 }
@@ -95,3 +93,32 @@ number_of_roots str_to_enum(char* number_of_answers)
         return ERROR_SOLUTIONS;
 }
 
+void is_input_correct(int argc, const char* argv[], FILE* file_pointer)
+{
+    if (argc != 2)
+    {
+        printf(MAKE_BOLD_RED("Please, use: %s file_name\n\n"), argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    if (file_pointer  == NULL)
+    {
+        printf(MAKE_BOLD_RED("Can't open file %s\n\n"), argv[1]);
+        exit(EXIT_FAILURE);
+    }
+
+    return;
+}
+
+void is_number_of_tests_correct(int total_number_of_tests)
+{
+    if (total_number_of_tests > SIZE_OF_TESTS_ARRAY)
+    {
+        printf(MAKE_BOLD_RED("Too many tests.\n\n"));
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        return;
+    }
+}
