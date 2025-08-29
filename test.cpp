@@ -10,18 +10,18 @@
 
 void run_test_solver(struct answers_data* answers, int argc, const char* argv[])
 {
-    struct test_equation_data array_of_tests[SIZE_OF_TESTS_ARRAY] = {}; //TODO calloc
-
     FILE* file_pointer = fopen(argv[1] , "r");
     is_input_correct(argc, argv, file_pointer);
 
-    int total_number_of_tests = 0;
+    size_t total_number_of_tests = 0;
     int number_of_failed_tests = 0;
 
     fscanf(file_pointer, "%d\n", &total_number_of_tests);
-    is_number_of_tests_correct(total_number_of_tests);
 
-    for (int i = 0; i < total_number_of_tests; i++)
+    struct test_equation_data* array_of_tests = (struct test_equation_data*)
+                                        calloc(total_number_of_tests, sizeof(test_equation_data));
+
+    for (size_t i = 0; i < total_number_of_tests; i++)
     {
         number_of_failed_tests += test_one_equation(&array_of_tests[i], answers, file_pointer);
     }
@@ -108,17 +108,4 @@ void is_input_correct(int argc, const char* argv[], FILE* file_pointer)
     }
 
     return;
-}
-
-void is_number_of_tests_correct(int total_number_of_tests)
-{
-    if (total_number_of_tests > SIZE_OF_TESTS_ARRAY)
-    {
-        printf(MAKE_BOLD_RED("Too many tests.\n\n"));
-        exit(EXIT_FAILURE);
-    }
-    else
-    {
-        return;
-    }
 }

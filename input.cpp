@@ -17,6 +17,7 @@ void input_coefficient(struct coefficients_data* coefficients, struct answers_da
     for (int i = 0; i < NUM_OF_COEFFICIENTS; i++)
     {
         printf(MAKE_BOLD("Enter the %s coefficient:\n"), numerate[i]);
+        
         int result_of_scanf = scanf("%lf", &(coefficients->a) + i);
         int extra_symbol = 0;
 

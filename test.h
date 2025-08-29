@@ -1,4 +1,3 @@
-const int    SIZE_OF_TESTS_ARRAY   = 100;
 const int    MAX_LEN_STR_NUM_ROOTS = 14;
 
 enum number_of_roots
@@ -35,5 +34,4 @@ void display_failed_message(struct test_equation_data* test, struct answers_data
 number_of_roots str_to_enum(char* number_of_answers);
 void swap_value(double* answer_1, double* answer_2);
 void is_input_correct(int argc, const char* argv[], FILE* file_pointer);
-void is_number_of_tests_correct(int total_number_of_tests);
 int  is_close_to_zero(double number_being_checked);

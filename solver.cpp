@@ -116,6 +116,7 @@ void check_minus_before_zero (double* number_being_checked)
 void is_not_special_value(double coefficient)
 {
     assert(!isnan(coefficient) && !isinf(coefficient));
+    
     return;
 }
 
