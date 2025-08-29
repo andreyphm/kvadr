@@ -12,7 +12,7 @@ int main(int argc, const char* argv[])
     parse_argc_argv(argc, argv, &do_tests, file_pointer);
 
     struct coefficients_data coefficients = {.a = NAN, .b = NAN, .c = NAN};
-    struct answers_data answers = {.x1 = NAN, .x2 = NAN,.number_of_answers = ERROR_SOLUTIONS};
+    struct answers_data answers = {.x1 = NAN, .x2 = NAN, .number_of_answers = ERROR_SOLUTIONS};
 
     int program_status = PROGRAM_CONTINUE;
 
