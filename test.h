@@ -1,4 +1,4 @@
-const int    MAX_LEN_STR_NUM_ROOTS = 14;
+const int MAX_LEN_STR_NUM_ROOTS = 14;
 
 enum number_of_roots
 {
@@ -26,12 +26,11 @@ struct test_equation_data
     struct answers_data reference_answers;
 };
 
-bool test_one_equation(struct test_equation_data* test_equation, struct answers_data* answers, FILE* file_pointer);
-void run_test_solver(struct answers_data* answers, int argc, const char* argv[]);
+void run_test_solver(struct answers_data* answers, FILE* file_pointer);
+bool test_one_equation(struct test_equation_data* test, struct answers_data* answers, FILE* file_pointer);
 void equation_solver(struct coefficients_data* coefficients, struct answers_data* answers);
 
 void display_failed_message(struct test_equation_data* test, struct answers_data* answers);
 number_of_roots str_to_enum(char* number_of_answers);
 void swap_value(double* answer_1, double* answer_2);
-void is_input_correct(int argc, const char* argv[], FILE* file_pointer);
 int  is_close_to_zero(double number_being_checked);

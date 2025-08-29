@@ -8,10 +8,9 @@
 #include "test.h"
 #include "font.h"
 
-void run_test_solver(struct answers_data* answers, int argc, const char* argv[])
+void run_test_solver(struct answers_data* answers, FILE* file_pointer)
 {
-    FILE* file_pointer = fopen(argv[1] , "r");
-    is_input_correct(argc, argv, file_pointer);
+    assert(answers);
 
     size_t total_number_of_tests = 0;
     int number_of_failed_tests = 0;
@@ -41,8 +40,8 @@ bool test_one_equation(struct test_equation_data* test, struct answers_data* ans
     char num_of_answers[MAX_LEN_STR_NUM_ROOTS] = "";
 
     fscanf(file_pointer, "a = %lf, b = %lf, c = %lf, x1 = %lf, x2 = %lf, number_of_answers = %s\n",
-            &(test->coefficients.a), &(test->coefficients.b), &(test->coefficients.c),
-            &(test->reference_answers.x1), &(test->reference_answers.x2), num_of_answers);
+                            &(test->coefficients.a), &(test->coefficients.b), &(test->coefficients.c),
+                            &(test->reference_answers.x1), &(test->reference_answers.x2), num_of_answers);
 
     test->reference_answers.number_of_answers = str_to_enum(num_of_answers);
 
@@ -91,21 +90,4 @@ number_of_roots str_to_enum(char* number_of_answers)
         return TWO_SOLUTIONS;
     else
         return ERROR_SOLUTIONS;
-}
-
-void is_input_correct(int argc, const char* argv[], FILE* file_pointer)
-{
-    if (argc != 2)
-    {
-        printf(MAKE_BOLD_RED("Please, use: %s file_name\n\n"), argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
-    if (file_pointer  == NULL)
-    {
-        printf(MAKE_BOLD_RED("Can't open file %s\n\n"), argv[1]);
-        exit(EXIT_FAILURE);
-    }
-
-    return;
 }

@@ -40,12 +40,15 @@ struct test_equation_data
     struct answers_data reference_answers;
 };
 
+void parse_argc_argv(int argc, const char* argv[], bool* do_tests, FILE* file_pointer);
+
 void display_a_greeting(void);
 
-void run_test_solver(struct answers_data* answers, int argc, const char* argv[]);
+void run_test_solver(struct answers_data* answers, FILE* file_pointer);
 void swap_value(double* answer_1, double* answer_2);
 
-void input_coefficient(struct coefficients_data* coefficients, struct answers_data* answers, int* program_status);
+void input_coefficient(struct coefficients_data* coefficients,
+                             struct answers_data* answers, int* program_status);
 void clear_input_buffer(void);
 void request_re_entry(int* program_status);
 
