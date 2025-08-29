@@ -8,11 +8,11 @@
 int main(int argc, const char* argv[])
 {
     bool do_tests = true;
-    FILE* file_pointer = fopen(argv[1] , "r");
+    FILE* file_pointer = fopen(argv[1] , "rb");
     parse_argc_argv(argc, argv, &do_tests, file_pointer);
 
     struct coefficients_data coefficients = {.a = NAN, .b = NAN, .c = NAN};
-    struct answers_data answers = {.x1 = 0, .x2 = 0,.number_of_answers = ERROR_SOLUTIONS};
+    struct answers_data answers = {.x1 = NAN, .x2 = NAN,.number_of_answers = ERROR_SOLUTIONS};
 
     int program_status = PROGRAM_CONTINUE;
 
