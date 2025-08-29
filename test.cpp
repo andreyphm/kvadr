@@ -28,8 +28,8 @@ void run_test_solver(struct answers_data* answers, FILE* file_pointer)
     printf(MAKE_BOLD("Number of failed tests: %d.\n\n"), number_of_failed_tests);
 
     fclose(file_pointer);
-    
-    free(file_pointer);
+
+    free(array_of_tests);
 
     return;
 }
